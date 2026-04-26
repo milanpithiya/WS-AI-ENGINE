@@ -1,0 +1,94 @@
+# ============================================================
+# ws-ai-engine Configuration
+# WealthSpectrum AI Engine — Central LLM Service
+# ============================================================
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1                        # Single worker — Ollama serializes requests anyway
+  cors_origins:
+    - "http://localhost:8080"
+    - "http://localhost:4200"
+    # Add your WealthSpectrum server IP/domain
+    # - "https://your-wealthspectrum-server.com"
+
+# Ollama LLM Server
+ollama:
+  base_url: "http://localhost:11434"    # Change to Ollama server IP if different
+  default_model: "llama3"
+  fallback_model: "mistral"
+  timeout: 600                          # seconds — total wall-clock for prompt eval + generation on CPU
+  options:
+    temperature: 0.3                    # Low for financial accuracy
+    num_ctx: 4096                       # Context window tokens (sufficient for optimized prompts)
+    num_predict: 768                    # Max response tokens (~580 words, matching template's 600 word limit)
+    top_p: 0.9
+    repeat_penalty: 1.1
+
+# Data Optimizer Settings
+optimizer:
+  max_holdings_detail: 15               # Top N holdings sent in full detail
+  max_tokens_portfolio: 2000            # Max tokens for portfolio data in prompt
+  max_tokens_total: 6000                # Max total prompt tokens
+  include_fields:
+    holdings:
+      - "securityName"
+      - "securityType"
+      - "assetClass"
+      - "sectorName"
+      - "investedValue"
+      - "marketValue"
+      - "unrealizedGainPct"
+      - "xirr"
+      - "weightInPortfolio"
+    performance:
+      - "portfolioOrAssetClassOrSecurityName"
+      - "level"
+      - "investedValue"
+      - "marketValue"
+      - "absoluteReturn"
+      - "xirr"
+
+# RAG (Retrieval-Augmented Generation)
+rag:
+  enabled: false                        # Enable after indexing documents
+  chroma_persist_dir: "./data/chroma_store"
+  embedding_model: "all-MiniLM-L6-v2"  # sentence-transformers model
+  chunk_size: 500                       # words per chunk
+  chunk_overlap: 50                     # overlap between chunks
+  top_k: 5                             # number of relevant chunks to retrieve
+
+# Modules
+modules:
+  ai_advisor:
+    enabled: true
+    description: "WealthSpectrum AI Advisor — portfolio Q&A and recommendations"
+  portfolio_insight:
+    enabled: true
+    description: "Client Portfolio Insight Engine — deep analysis and patterns"
+  goal_planner:
+    enabled: false                      # Phase 2
+    description: "Goal-Based Financial Planning AI"
+  risk_profiler:
+    enabled: false                      # Phase 2
+    description: "AI Risk Profiler — behavioral and portfolio risk assessment"
+
+# Logging (similar to WealthSpectrum Tomcat log config)
+# Generates: wsAiEngine.log, wsAiEngine1.log, wsAiEngine2.log ... wsAiEngine5.log
+# After max_files reached, oldest file is overwritten (rotation)
+logging:
+  level: "DEBUG"                         # DEBUG, INFO, WARNING, ERROR
+  log_file_path: "/Users/milanpithiya/Python/ws-ai-engine/logs"
+  #log_file_path: "C:\\Tomcat90\\logs" # Directory for log files (use \\ on Windows)
+  log_filename: "wsAiEngine.log"        # Base log filename
+  log_max_filesize: 50                  # Max size per file in MB
+  log_max_files: 5                      # Max backup files (wsAiEngine1.log ... wsAiEngine5.log)
+  log_format: "{timestamp} | {level} | {module}:{function}:{line} | {message}"
+  console_enabled: true                 # Also print logs to console
+
+# Security
+security:
+  api_key_enabled: false                # Enable for production
+  api_key: ""                           # Set a strong key for production
+  allowed_ips: []                       # Empty = allow all; add IPs to restrict

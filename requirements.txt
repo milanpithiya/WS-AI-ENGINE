@@ -1,0 +1,48 @@
+# ============================================================
+# ws-ai-engine Dependencies
+# Compatible with Python 3.8+
+# ============================================================
+
+# --- Web Framework ---
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# --- HTTP Client (for Ollama calls) ---
+httpx==0.25.2
+aiohttp==3.9.1
+
+# --- Data Models & Validation ---
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# --- Configuration ---
+PyYAML==6.0.1
+
+# --- RAG: Vector Store ---
+chromadb==0.4.22
+
+# --- RAG: Embeddings ---
+sentence-transformers==2.2.2
+
+# --- LLM Orchestration (optional, for advanced chains) ---
+# langchain==0.0.350
+# langchain-community==0.0.10
+
+# --- Token Counting ---
+tiktoken==0.5.2
+
+# --- Document Processing ---
+PyPDF2==3.0.1
+python-docx==1.1.0
+openpyxl==3.1.2
+
+# --- Utilities ---
+python-dateutil==2.8.2
+numpy==1.24.4
+
+# --- Logging ---
+loguru==0.7.2
+
+# --- CORS & Security ---
+python-jose[cryptography]==3.3.0
